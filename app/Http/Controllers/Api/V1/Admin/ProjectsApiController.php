@@ -163,7 +163,7 @@ class ProjectsApiController extends Controller
 
      /**
  * @OA\Get(
- * path="/getLists/",
+ * path="/getLists",
  * summary="Get Contact Lists",
  * description="Get Contact Lists",
  * tags={"Contact List"},
@@ -192,9 +192,9 @@ class ProjectsApiController extends Controller
  *     )
  * )
  */
-
-     /**
- * @OA\DELETE(
+ 
+       /**
+ * @OA\Delete(
  * path="/deleteList/{id}/{type}",
  * summary="Delete Contact List",
  * description="Delete Contact List",
@@ -240,7 +240,46 @@ class ProjectsApiController extends Controller
  *     )
  * )
  */
-
+ 
+     /**
+ * @OA\Delete(
+ * path="/deleteListGroup/{group_id}/{delete_lists}",
+ * summary="Delete List Group",
+ * description="Delete List Group",
+ * tags={"Contact List"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="group_id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=500,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
 
     /**
  * @OA\POST(
@@ -443,7 +482,7 @@ class ProjectsApiController extends Controller
  */
 
     /**
- * @OA\GET(
+ * @OA\Delete(
  * path="/deleteContact/{ids}",
  * summary="Delete Contact",
  * description="Delete Contact",
@@ -483,7 +522,7 @@ class ProjectsApiController extends Controller
  */
 
     /**
- * @OA\GET(
+ * @OA\Delete(
  * path="/deleteContactByEmail/{email}/{recursive}",
  * summary="Delete Contact By Email",
  * description="Delete Contact By Email",
@@ -891,6 +930,46 @@ class ProjectsApiController extends Controller
  *     )
  * )
  */
+ 
+     /**
+ * @OA\Delete(
+ * path="/deleteBroadcasts/{ids}",
+ * summary="Delete Broadcasts",
+ * description="Delete Broadcasts",
+ * tags={"Broadcast"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=424,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
 
     /**
  * @OA\POST(
@@ -1022,6 +1101,46 @@ class ProjectsApiController extends Controller
  *      ),
  * @OA\Response(
  *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+ 
+     /**
+ * @OA\Delete(
+ * path="/deleteCustomField/{id}/{force}",
+ * summary="Delete Custom Field",
+ * description="Delete Custom Field",
+ * tags={"Custom Field"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=425,
  *    description="there is something wrong",
  *    @OA\JsonContent(
  *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
@@ -1189,6 +1308,46 @@ class ProjectsApiController extends Controller
  *     )
  * )
  */
+ 
+    /**
+ * @OA\Delete(
+ * path="/deleteSuppressed/{type}",
+ * summary="Delete Suppressed",
+ * description="Delete Suppressed",
+ * tags={"Suppress"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=426,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
 
 
 
@@ -1346,7 +1505,45 @@ class ProjectsApiController extends Controller
  * )
  */
 
-
+    /**
+ * @OA\Delete(
+ * path="/deleteBounceAddresses/{ids}",
+ * summary="Delete Bounce Addresses",
+ * description="Delete Bounce Addresses",
+ * tags={"Bounce Address"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=429,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
 
 
 
