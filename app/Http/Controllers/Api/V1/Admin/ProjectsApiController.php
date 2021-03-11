@@ -3,272 +3,28 @@
 class ProjectsApiController extends Controller
 {
     
-    /**
-     * @OA\Get(
-     *      path="/mohammadCustom",
-     *      operationId="getCustom",
-     *      tags={"Mohammad"},
-     *      summary="Get Custom",
-     *      description="Return Custom",
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\Items(ref="#/components/schemas/ProjectResource")
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     *     )
-     */
-
-    /**
-     * @OA\Get(
-     *      path="/projects",
-     *      operationId="getProjectsList",
-     *      tags={"Projects"},
-     *      summary="Get list of projects",
-     *      description="Returns list of projects",
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\Items(ref="#/components/schemas/ProjectResource")
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     *     )
-     */
-    public function index()
-    {
-        abort_if(Gate::denies('project_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return new ProjectResource(Project::with(['author'])->get());
-    }
-
-     
-
-    /**
-     * @OA\Post(
-     *      path="/projects",
-     *      operationId="storeProject",
-     *      tags={"Projects"},
-     *      summary="Store new project",
-     *      description="Returns project data",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\Items(ref="#/components/schemas/StoreProjectRequest")
-     *      ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful operation",
-     *          @OA\Items(ref="#/components/schemas/Project")
-     *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     * )
-     */
-    public function store(StoreProjectRequest $request)
-    {
-        $project = Project::create($request->all());
-
-        return (new ProjectResource($project))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
-    }
-
-    /**
-     * @OA\Get(
-     *      path="/projects/{id}",
-     *      operationId="getProjectById",
-     *      tags={"Projects"},
-     *      summary="Get project information",
-     *      description="Returns project data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Project id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\Items(ref="#/components/schemas/Project")
-     *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     * )
-     */
-    public function show(Project $project)
-    {
-        abort_if(Gate::denies('project_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return new ProjectResource($project->load(['author']));
-    }
-
-    /**
-     * @OA\Put(
-     *      path="/projects/{id}",
-     *      operationId="updateProject",
-     *      tags={"Projects"},
-     *      summary="Update existing project",
-     *      description="Returns updated project data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Project id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\Items(ref="#/components/schemas/UpdateProjectRequest")
-     *      ),
-     *      @OA\Response(
-     *          response=202,
-     *          description="Successful operation",
-     *          @OA\Items(ref="#/components/schemas/Project")
-     *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Resource Not Found"
-     *      )
-     * )
-     */
-    public function update(UpdateProjectRequest $request, Project $project)
-    {
-        $project->update($request->all());
-
-        return (new ProjectResource($project))
-            ->response()
-            ->setStatusCode(Response::HTTP_ACCEPTED);
-    }
-
-    /**
-     * @OA\Delete(
-     *      path="/projects/{id}",
-     *      operationId="deleteProject",
-     *      tags={"Projects"},
-     *      summary="Delete existing project",
-     *      description="Deletes a record and returns no content",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Project id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=204,
-     *          description="Successful operation",
-     *          @OA\Items()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Resource Not Found"
-     *      )
-     * )
-     */
-    public function destroy(Project $project)
-    {
-        abort_if(Gate::denies('project_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $project->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
- * @OA\Post(
- * path="/login",
- * summary="Sign in",
- * description="Login by email, password",
- * operationId="authLogin",
- * tags={"auth"},
- * @OA\RequestBody(
- *    required=true,
- *    description="Pass user credentials",
- *    @OA\JsonContent(
- *       required={"email","password"},
- *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
- *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
- *       @OA\Property(property="persistent", type="boolean", example="true"),
- *    ),
- * ),
- * @OA\Response(
- *    response=422,
- *    description="Wrong credentials response",
- *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
- *        )
- *     )
- * )
- */
-
-
      /**
  * @OA\Post(
- * path="/list",
+ * path="/addList",
  * summary="Add a List",
  * description="Add a List",
- * operationId="listID",
- * tags={"List"},
+ * tags={"Contact List"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
   * @OA\Parameter(
  *          name="list_name",
  *          required=true,
@@ -291,7 +47,7 @@ class ProjectsApiController extends Controller
  *          in="query",
  *          @OA\Schema(
  *            type="string",
- *            example="user@example.com",
+ *            example="owner@example.com",
  *            format="email"
  *          )
  *      ),
@@ -300,11 +56,127 @@ class ProjectsApiController extends Controller
  *          required=true,
  *          in="query",
  *          @OA\Schema(
- *              type="string"
+ *            type="string",
+ *            example="reply@example.com",
+ *            format="email"
  *          )
  *      ),
   * @OA\Parameter(
  *          name="bounce_email",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *            type="string",
+ *            example="bounce@example.com",
+ *            format="email"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+     /**
+ * @OA\Get(
+ * path="/getList/{id}",
+ * summary="Get Contact List Details",
+ * description="Get Contact List Details",
+ * tags={"Contact List"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+  * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+     /**
+ * @OA\Put(
+ * path="/updateList/{id}",
+ * summary="Update Contact List",
+ * description="Update Contact List",
+ * tags={"Contact List"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+  * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+     /**
+ * @OA\Get(
+ * path="/getLists/",
+ * summary="Get Contact Lists",
+ * description="Get Contact Lists",
+ * tags={"Contact List"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
  *          required=true,
  *          in="query",
  *          @OA\Schema(
@@ -322,40 +194,1203 @@ class ProjectsApiController extends Controller
  */
 
      /**
- * @OA\Post(
- *      path="/sign-in",
- *      operationId="signIn",
- *      tags={"Authentication"},
- *      summary="AuthenticationController@signIn",
- *      description="Login",
- *      @OA\RequestBody(
+ * @OA\DELETE(
+ * path="/deleteList/{id}/{type}",
+ * summary="Delete Contact List",
+ * description="Delete Contact List",
+ * tags={"Contact List"},
+   * @OA\Parameter(
+ *          name="host",
  *          required=true,
- *          @OA\MediaType(mediaType="multipart/form-data",
- *              @OA\Schema(
- *                  required={"email","password"},
- *                  @OA\Property(
- *                      property="email",
- *                      type="string",
- *                      description="Email"
- *                  ),
- *                  @OA\Property(
- *                      property="password",
- *                      type="string",
- *                      description="Password"
- *                  ),
- *             )
- *         )
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
  *      ),
- *       @OA\Response(
- *          response=200,
- *          description="Successful",
- *       ),
- *       @OA\Response(
- *          response=401,
- *          description="Unauthorized",
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
  *      ),
- *  )
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
  */
+
+
+    /**
+ * @OA\POST(
+ * path="/addContact",
+ * summary="Add a Contact",
+ * description="Add a Contact",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="list_id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="email",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/updateContact/{id}",
+ * summary="Update Contact Details",
+ * description="Update Contact Details",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="list_id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/updateContactbyEmail/{email}",
+ * summary="Update Contact By Email",
+ * description="Update Contact By Email",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="email",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\GET(
+ * path="/getContact/{ids}",
+ * summary="Get Contact Details",
+ * description="Get Contact Details",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\GET(
+ * path="/getContacts",
+ * summary="Get Contacts",
+ * description="Get Contacts",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\GET(
+ * path="/deleteContact/{ids}",
+ * summary="Delete Contact",
+ * description="Delete Contact",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\GET(
+ * path="/deleteContactByEmail/{email}/{recursive}",
+ * summary="Delete Contact By Email",
+ * description="Delete Contact By Email",
+ * tags={"Contact"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="email",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/markAsComplaint/{id}",
+ * summary="Mark as Complaint",
+ * description="Mark as Complaint",
+ * tags={"Complaint"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/markAsUnsubscribed/{id}",
+ * summary="Mark as Unsubscribed",
+ * description="Mark as Unsubscribed",
+ * tags={"Unsubscribed"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/markAsBounced/{id}",
+ * summary="Mark as Soft/Hard Bounce",
+ * description="Mark as Soft/Hard Bounce",
+ * tags={"Soft/Hard Bounce"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\Post(
+ * path="/addBroadcast",
+ * summary="Add a Broadcast",
+ * description="Add a Broadcast",
+ * tags={"Broadcast"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="broadcast_name",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="group_name",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+      * @OA\Parameter(
+ *          name="email_subject",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+      * @OA\Parameter(
+ *          name="content_html",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+      * @OA\Parameter(
+ *          name="content_text",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/updateBroadcast/{id}",
+ * summary="Update Broadcast",
+ * description="Update Broadcast",
+ * tags={"Broadcast"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\GET(
+ * path="/getBroadcasts",
+ * summary="Get Broadcasts",
+ * description="Get Broadcasts",
+ * tags={"Broadcast"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+
+
+    /**
+ * @OA\POSt(
+ * path="/broadcastSchedule",
+ * summary="Broadcast Schedule",
+ * description="Broadcast Schedule",
+ * tags={"Broadcast"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="name",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="broadcast_ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="smtp_ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="smtp_sequence",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="sending_time",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="sender_type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="sending_pattern",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\POST(
+ * path="/addCustomField",
+ * summary="Add Custom Field",
+ * description="Add Custom Field",
+ * tags={"Custom Field"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="name",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="list_id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/updateCustomField/{id}",
+ * summary="Update Custom Field",
+ * description="Update Custom Field",
+ * tags={"Custom Field"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+
+
+    /**
+ * @OA\Get(
+ * path="/getListCustomFields/{id}",
+ * summary="Get List Custom Fields",
+ * description="Get List Custom Fields",
+ * tags={"Custom Field"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\Get(
+ * path="/getBroadcastStatsComplaints/{schedule_id}",
+ * summary="Get Broadcast Complaint Stats",
+ * description="Get Broadcast Complaint Stats",
+ * tags={"Broadcast"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="schedule_id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\Get(
+ * path="/getCustomFields",
+ * summary="Get Custom Fields",
+ * description="Get Custom Fields",
+ * tags={"Custom Field"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\POST(
+ * path="/suppress",
+ * summary="Suppress",
+ * description="Suppress",
+ * tags={"Suppress"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="reference",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\GET(
+ * path="/getSuppressed",
+ * summary="Get Suppressed",
+ * description="Get Suppressed",
+ * tags={"Suppress"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="type",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+
+
+    /**
+ * @OA\POST(
+ * path="/addBounceAddress",
+ * summary="Add Bounce Address",
+ * description="Add Bounce Address",
+ * tags={"Bounce Address"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="email",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="hostname",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="port",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="username",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+     * @OA\Parameter(
+ *          name="method",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+    /**
+ * @OA\PUT(
+ * path="/updateBounceAddress/{id}",
+ * summary="Update Bounce Address",
+ * description="Update Bounce Address",
+ * tags={"Bounce Address"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="id",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+
+
+    /**
+ * @OA\GET(
+ * path="/getBounceAddresses",
+ * summary="Get Bounce Addresses",
+ * description="Get Bounce Addresses",
+ * tags={"Bounce Address"},
+   * @OA\Parameter(
+ *          name="host",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+   * @OA\Parameter(
+ *          name="api_token",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+    * @OA\Parameter(
+ *          name="ids",
+ *          required=true,
+ *          in="query",
+ *          @OA\Schema(
+ *              type="integer"
+ *          )
+ *      ),
+ * @OA\Response(
+ *    response=422,
+ *    description="there is something wrong",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
