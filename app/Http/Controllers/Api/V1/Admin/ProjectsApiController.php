@@ -3,6 +3,58 @@
 class ProjectsApiController extends Controller
 {
     
+   /**
+ * @OA\Post(
+ *   path="/getCustomerByEmail.php",
+ *   summary="List the details of customer by the email.",
+ *   @OA\Parameter(
+ *     name="email",
+ *     in="query",
+ *     description="Customer email to ge the data",
+ *     required=true,
+ *     @OA\Schema(
+ *       @OA\Property(
+ *         property="id",
+ *         type="object",
+ *         @OA\Property(
+ *           property="abc",
+ *           type="object",
+ *           @OA\Property(
+ *             property="inner abc",
+ *             type="number",
+ *             default=1,
+ *             example=123
+ *           )
+ *         ),
+ *         @OA\Property(
+ *           property="xyz",
+ *           type="string",
+ *           default="xyz default value",
+ *           example="xyz example value",
+ *         )
+ *       )
+ *     )
+ *   ),
+ *   @OA\Response(
+ *     response=200,
+ *     description="Details of the customer"
+ *   ),
+ *   @OA\Response(
+ *     response=400,
+ *     description="Email required"
+ *   ),
+ *   @OA\Response(
+ *     response=404,
+ *     description="Customer does not exist"
+ *   ),
+ *   @OA\Response(
+ *     response="default",
+ *     description="an ""unexpected"" error"
+ *   )
+ * )
+ */
+
+    
      /**
  * @OA\Post(
  * path="/addList",
@@ -75,7 +127,77 @@ class ProjectsApiController extends Controller
  *    response=422,
  *    description="there is something wrong",
  *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Sorry, there is something wrong. Please try again")
+ *      @OA\Property(property="status", type="string", example="success"),
+ *      @OA\Property(property="result", type="string", example="Success: List has been successfully created."),
+ *         @OA\Property(
+ *           property="Response",
+ *           type="object",
+ *           @OA\Property(
+ *             property="id",
+ *             type="number",
+ *             example="12"
+ *           ),
+ *          @OA\Property(
+ *             property="name",
+ *             type="string",
+ *             example="Test List Via Api"
+ *           ),
+ *         @OA\Property(
+ *             property="group_id",
+ *             type="number",
+ *             example="2"
+ *           ),
+ *          @OA\Property(
+ *             property="owner_name",
+ *             type="string",
+ *             example="John Lee"
+ *           ),
+ *          @OA\Property(
+ *             property="owner_email",
+ *             type="string",
+ *             example="owner@anydomain.com"
+ *           ),
+ *           @OA\Property(
+ *             property="reply_email",
+ *             type="string",
+ *             example="reply@anydomain.com"
+ *           ),
+ *           @OA\Property(
+ *             property="bounce_email_id",
+ *             type="integer",
+ *             example="1"
+ *           ),
+ *           @OA\Property(
+ *             property="user_id",
+ *             type="integer",
+ *             example="21"
+ *           ),
+ *           @OA\Property(
+ *             property="created_at",
+ *             type="string",
+ *             example="2019-05-08 09:17:41"
+ *           ),
+ *           @OA\Property(
+ *             property="updated_at",
+ *             type="string",
+ *             example="2019-05-08 09:17:41"
+ *           ),
+ *          @OA\Property(
+ *             property="custom_fields",
+ *             type="string",
+ *             type="object",
+ *           @OA\Property(
+ *             property="2",
+ *             type="string",
+ *             example="First Name"
+ *           ),
+ *          @OA\Property(
+ *             property="13",
+ *             type="string",
+ *             example="Profession"
+ *           ),
+ *           ),
+ *         ),
  *        )
  *     )
  * )
